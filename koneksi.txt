@@ -1,0 +1,192 @@
+//koneksi
+
+<?php
+
+class Connection{
+    public $host="localhost"; 
+    public $user ="root"; 
+    public $password="";
+    public $database="belajar_buku"; 
+    public $conn;
+
+    public function __construct(){
+        $this->conn = mysqli_connect($this->host, $this->user, $this->password, $this->database);
+        if($this->conn==false)die("tidak dapat tersambung ke database".$this->$conn->connect_error());
+    return $this->conn;
+    }
+}
+
+
+class Register extends Connection{
+    public function registration($id, $nama, $username, $password, $cpass, $level){
+    $duplicate=mysqli_query($this->conn, "SELECT * FROM user WHERE id ='$id'");
+    if(mysqli_num_rows($duplicate)>0){ return 10;
+    //nik has already taken
+    }
+    else{
+    if($password==$cpass){
+    $query ="INSERT INTO user (id, nama, username, password, level) VALUES ('$id', '$nama', '$username', '$password', '$password', '$password', '$level')";
+    mysqli_query($this->conn, $query); return 1;
+    //register successful
+     
+    }
+    else{
+    return 100;
+    //password does not match
+    }
+    }
+    }
+    }
+
+
+
+    class Login extends Connection{
+        public $id;
+        public function loginan($username, $password, $level){
+            $result = mysqli_query($this->conn, "SELECT * FROM user WHERE username ='$username'and password='$password'and level='$level'");
+            $row= mysqli_fetch_assoc($result);
+    
+
+            if(mysqli_num_rows($result)>0){
+                if($password==$row["password"]){
+                    $_SESSION['id'] = $row['id'];
+                    $_SESSION['level'] = $row['level'];
+                    return 1;
+                    //login sukses
+    
+                }
+                if($select == 1){
+                    $_SESSION['id'] = $row['id'];
+                 }
+            }
+            
+        }
+        public function idUser(){
+            return $this->id;
+        }
+    
+    
+    }
+
+class CrudBuku extends Connection{ public function prepare($data){
+    $perintah = $this->conn->prepare($data);
+    if(!$perintah)die("Terjadi kesalahan pada prepare statement".$this->conn->error);
+    return $perintah;
+    }
+    public function query($data){
+    $perintah = $this->conn->query($data);
+    if(!$perintah)die("Terjadi kesalahan pada query statement".$this->conn->error);
+    return $perintah;
+    }
+    
+    public function insertBuku($id, $judul, $penerbit, $pengarang, $deskripsi, $tahun, $kategori_id, $harga, $foto){
+    $query ="INSERT INTO buku (id, judul, penerbit, pengarang, deskripsi, tahun, kategori_id, harga, foto) values ('$id','$judul','$penerbit','$pengarang','$deskripsi','$tahun','$kategori_id','$harga','$foto')";
+    mysqli_query($this->conn, $query); return 1;
+    }
+    
+    public function tampilBuku(){
+    $sql="SELECT id, judul, penerbit, pengarang, tahun, kategori_id, harga FROM buku";
+    $perintah=$this->query($sql); return $perintah;
+    }
+
+    public function tampilanBuku(){
+        $sql="SELECT * FROM buku,kategori WHERE buku.kategori_id = kategori.id_kategori";
+        $perintah=$this->query($sql); return $perintah;
+        }
+    
+    public function editBuku(){
+        $sql="SELECT id, judul, penerbit, pengarang, deskripsi, tahun, kategori_id, harga, foto FROM buku WHERE id = $data ";
+        $perintah=$this->query($sql); return $perintah;
+        }
+
+    public function detailDataBuku($data){
+        $sql="SELECT id, judul, penerbit, pengarang, deskripsi, tahun, kategori_id, harga, foto FROM buku WHERE id=?";
+        if($stmt=$this->conn->prepare($sql)):
+        $stmt->bind_param("i",$param_data);
+        $param_data=$data;
+     
+    if($stmt->execute()):
+    $stmt->store_result();
+    $stmt->bind_result($this->id, $this->judul, $this->penerbit, $this->pengarang, $this->deskripsi,$this->tahun, $this->kategori_id, $this->harga, $this->foto);
+    $stmt->fetch(); if($stmt->num_rows==1):
+    return true; else:
+    return false; endif;
+    endif; endif;
+    $stmt->close();
+    }
+
+
+    
+    public function updateBuku($judul, $penerbit, $pengarang, $tahun,$kategori_id, $harga, $data){
+        $query ="update buku set judul='$judul', penerbit='$penerbit', pengarang='$pengarang',tahun='$tahun', kategori_id='$kategori_id',  harga='$harga' WHERE id='$data'";
+        mysqli_query($this->conn, $query);
+        return 1; 
+        }
+        public function deleteBuku($data){
+        $sql="DELETE FROM buku WHERE id=?";
+        if($stmt=$this->prepare($sql)):
+        $stmt->bind_param("i",$param_data);
+        $param_data=$data;
+        if($stmt->execute()):
+        return true;
+        else: 
+        return false;
+        endif;
+        endif;
+        $stmt->close();
+        }
+    }
+
+    class CrudKategori extends Connection{ public function prepare($data){
+        $perintah = $this->conn->prepare($data);
+        if(!$perintah)die("Terjadi kesalahan pada prepare statement".$this->conn->error);
+        return $perintah;
+        }
+        public function query($data){
+        $perintah = $this->conn->query($data);
+        if(!$perintah)die("Terjadi kesalahan pada query statement".$this->conn->error);
+        return $perintah;
+        }
+        
+        public function tampilKategori(){
+        $sql="SELECT id_kategori, nama_kategori FROM kategori";
+        $perintah=$this->query($sql); return $perintah;
+        }
+
+        public function insertKategori($id, $nama_kategori){
+            $query ="INSERT INTO kategori (id_kategori, nama_kategori) values ('$id','$nama_kategori')";
+            mysqli_query($this->conn, $query); return 1;
+            }
+
+            public function detailDataKategori($data){
+                $sql="SELECT id_kategori, nama_kategori FROM kategori WHERE id_kategori=?";
+                if($stmt=$this->conn->prepare($sql)):
+                $stmt->bind_param("i",$param_data);
+                $param_data=$data;
+             
+            if($stmt->execute()):
+            $stmt->store_result();
+            $stmt->bind_result($this->id_kategori, $this->nama_kategori);
+            $stmt->fetch(); if($stmt->num_rows==1):
+            return true; else:
+            return false; endif;
+            endif; endif;
+            $stmt->close();
+            }
+
+            
+        public function deleteKategori($data){
+            $sql="DELETE FROM kategori WHERE id_kategori=?";
+            if($stmt=$this->prepare($sql)):
+            $stmt->bind_param("i",$param_data);
+            $param_data=$data;
+            if($stmt->execute()):
+            return true;
+            else: 
+            return false;
+            endif;
+            endif;
+            $stmt->close();
+            }
+
+    }

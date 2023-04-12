@@ -1,0 +1,132 @@
+//menulis
+#include <iostream>
+#include <conio.h>
+#include <fstream>
+using namespace std;
+
+int main()
+
+{
+
+ofstream myfile;
+
+myfile.open("ujicoba1.txt",ios::app);
+cout<<"OPERASIFILE 1" <<endl;
+cout<<"-------------" <<endl;
+
+if(!myfile.fail())
+{
+myfile<<"Belajar Operasi File"<<endl;
+myfile.close();
+
+cout<<"Text telah ditullis ke dalam file"<<endl;
+}
+
+else{
+cout<<"file tidak ditemukan"<<endl;
+}
+
+_getche();
+return EXIT_SUCCESS;
+}
+
+
+
+
+//membaca
+#include <iostream>
+#include <fstream>
+#include <conio.h>
+#include <stdlib.h>
+using namespace std;
+
+int main()
+{
+ifstream fileku;
+char isitexts;
+fileku.open("ujicoba1.txt");
+cout<<"operasi file 2"<<endl;
+cout<<"-------------"<<endl;
+if(!fileku.fail())
+{
+cout<<"isi dari file->";
+while(!fileku.eof())
+{
+fileku.get(isitexts);
+cout<<isitexts;
+}
+fileku.close();
+}else{
+cout<<"file tidak ditemukan"<<endl;
+}
+_getche();
+return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+//mengurutkan
+#include <iostream>
+#include <conio.h>
+using namespace std;
+int data[10], data2[10];
+int n;
+
+int tukar (int a,int b) {
+int t;
+t=data[b];
+data[b]=data[a];
+data[a]=t;
+}
+
+int input(){
+cout<<"Masukan Jumlah Data = ";
+cin>>n;
+cout<<endl;
+
+for (int i=0; i<n;i++){
+cout<<"Masukan Data Ke-"<<i+i<<" =";
+cin>>data[i];
+}
+cout<<endl;
+
+}
+
+int tampil(){
+for (int i=0;i<n;i++){
+cout<<"["<<data[i]<<"]";
+}cout<<endl;
+
+}
+
+int bubble_sort(){
+for (int i=1; i<n;i++){
+for (int j=n-1; j>=i;j--){
+cout<<(data[j]>data[j-1]);
+if (data[j]< data[j-1]){
+tukar(j,j-1);
+
+}
+
+}
+cout<<endl;
+
+}
+cout<<"Hasil Setelah Diproses";
+tampil();
+cout<<endl;
+}
+
+
+int main()
+{
+cout<<"ALGORITMA BUBBLE SORT"<<endl;
+input();
+cout<<"Proses Bubble Sort"<<endl;
+tampil();
+bubble_sort();
+getch();
+}

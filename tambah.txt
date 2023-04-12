@@ -1,0 +1,17 @@
+<?php
+require_once 'koneksi.php';
+    
+    $register=new Register(); 
+    if(isset($_POST["submit"])){
+      $result = $register->registration($_POST["id"], $_POST["nama"], $_POST["username"], $_POST["password"], $_POST["cpassword"], $_POST["level"]); 
+    if($result==1){
+      echo "<script>alert('Register Sukses');</script>";
+    }
+    elseif($result==10){
+      echo "<script>alert('Username or Password Has Alrady Taken');</script>";
+    }
+    elseif($result==100){
+      echo "<script>alert('Password does not match');</script>";
+    }
+    }
+?>
